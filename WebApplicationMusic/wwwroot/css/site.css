@@ -1,0 +1,434 @@
+/* Загальні стилі */
+body {
+    background-color: #121212;
+    color: #FFFFFF;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Навігаційне меню */
+.navbar {
+    background-color: #1A1A1A;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #4A4A4A;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-logo img {
+    height: 40px;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Зменшено відстань між елементами */
+}
+
+.navbar-album-search {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Зменшено відстань між полем пошуку та кнопками */
+}
+
+    .navbar-album-search input {
+        padding: 6px 12px; /* Зменшено розмір поля пошуку */
+        border: 1px solid #4A4A4A;
+        border-radius: 20px;
+        background-color: #2D2D2D;
+        color: #FFFFFF;
+        width: 180px; /* Зменшено ширину */
+        font-size: 0.9rem; /* Зменшено розмір шрифту */
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+        .navbar-album-search input:focus {
+            outline: none;
+            border-color: #4FD1C5;
+            background-color: #3A3A3A;
+        }
+
+    .navbar-album-search button {
+        padding: 6px 12px; /* Зменшено розмір кнопок */
+        background-color: #4FD1C5;
+        color: #121212;
+        border: none;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease, opacity 0.3s ease;
+    }
+
+        .navbar-album-search button:hover {
+            background-color: #38B2AC;
+        }
+
+        .navbar-album-search button:nth-child(3) { /* Стиль для кнопки "Скинути" */
+            background-color: transparent;
+            color: #4FD1C5;
+            border: 1px solid #4FD1C5;
+        }
+
+            .navbar-album-search button:nth-child(3):hover {
+                background-color: #4FD1C5;
+                color: #121212;
+            }
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Зменшено відстань між посиланнями */
+}
+
+    .navbar-links a {
+        color: #FFFFFF;
+        text-decoration: none;
+        font-size: 0.9rem; /* Зменшено розмір шрифту */
+        font-weight: 500;
+        padding: 5px 8px; /* Додано невеликий відступ для кращого вигляду */
+        border-radius: 12px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .navbar-links a:hover {
+            background-color: #4FD1C5;
+            color: #121212;
+        }
+
+.navbar-auth {
+    display: flex;
+    gap: 8px; /* Зменшено відстань між кнопками автентифікації */
+}
+
+.auth-button {
+    padding: 6px 12px; /* Зменшено розмір кнопок */
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+    .auth-button.login {
+        background-color: transparent;
+        color: #4FD1C5;
+        border: 1px solid #4FD1C5;
+    }
+
+    .auth-button.signup {
+        background-color: #4FD1C5;
+        color: #121212;
+    }
+
+    .auth-button:hover {
+        opacity: 0.9;
+    }
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .navbar-right {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .navbar-album-search {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+        .navbar-album-search input {
+            width: 120px;
+        }
+
+    .navbar-links {
+        gap: 10px;
+    }
+
+        .navbar-links a {
+            font-size: 0.85rem;
+            padding: 4px 6px;
+        }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .navbar-album-search {
+        justify-content: flex-start;
+    }
+
+        .navbar-album-search input {
+            width: 100%;
+        }
+}
+
+/* Банер */
+.banner {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+    .banner img {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        object-fit: cover;
+    }
+
+/* Хедер */
+.header-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+    .header-content h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+/* Кнопка "Додати альбом" */
+.add-button {
+    padding: 10px 20px;
+    background-color: #4FD1C5;
+    color: #121212;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+    .add-button:hover {
+        background-color: #38B2AC;
+    }
+
+/* Альбоми */
+#albums {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 250px);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    justify-content: center;
+}
+
+.album-card {
+    background-color: #1A1A1A;
+    padding: 15px;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .album-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+.album-info {
+    cursor: pointer;
+}
+
+.album-image {
+    width: 100%;
+    height: 218px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.album-card h4 {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.album-card p {
+    margin: 4px 0;
+    font-size: 0.9375rem;
+    color: #D1D5DB;
+}
+
+/* Кнопки дій */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+    .actions button {
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .actions button.edit-button {
+            background-color: transparent;
+            color: #4FD1C5;
+            border: 1px solid #4FD1C5;
+        }
+
+            .actions button.edit-button:hover {
+                background-color: #4FD1C5;
+                color: #121212;
+            }
+
+        .actions button.delete-button {
+            background-color: transparent;
+            color: #F56565;
+            border: 1px solid #F56565;
+        }
+
+            .actions button.delete-button:hover {
+                background-color: #F56565;
+                color: #121212;
+            }
+
+        .actions button.rate-button {
+            background-color: transparent;
+            color: #60A5FA;
+            border: 1px solid #60A5FA;
+        }
+
+            .actions button.rate-button:hover {
+                background-color: #60A5FA;
+                color: #121212;
+            }
+
+        .actions button.favorite-button {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: transparent;
+            border: 1px solid #ECC94B;
+            color: #ECC94B;
+        }
+
+            .actions button.favorite-button:hover {
+                background-color: #ECC94B;
+                color: #121212;
+            }
+
+            .actions button.favorite-button.active {
+                background-color: #ECC94B;
+                color: #121212;
+                border-color: #ECC94B;
+            }
+
+/* Модальні вікна */
+#addAlbumOverlay, #editAlbumOverlay, #albumDetailsOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+#addAlbumModal, #editAlbum, #albumDetailsModal {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #1A1A1A;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #4A4A4A;
+    position: relative;
+    z-index: 1000;
+    display: grid;
+    gap: 12px;
+}
+
+    #addAlbumModal form, #editAlbum form {
+        display: grid;
+        gap: 12px;
+    }
+
+    #addAlbumModal input, #editAlbum input {
+        padding: 8px;
+        border: 1px solid #4A4A4A;
+        border-radius: 8px;
+        background-color: #2D2D2D;
+        color: #FFFFFF;
+        font-size: 1rem;
+    }
+
+        #addAlbumModal input[type="submit"], #editAlbum input[type="submit"] {
+            background-color: #4FD1C5;
+            color: #121212;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+            #addAlbumModal input[type="submit"]:hover, #editAlbum input[type="submit"]:hover {
+                background-color: #38B2AC;
+            }
+
+.preview-container img {
+    max-width: 100px;
+    border-radius: 8px;
+}
+
+.album-details {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.album-cover {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+#album-details-content h4 {
+    font-size: 1.75rem;
+    margin: 10px 0;
+}
+
+#album-details-content p {
+    font-size: 1.125rem;
+    color: #D1D5DB;
+    margin: 5px 0;
+}
+
+#album-details-songs li {
+    padding: 8px 0;
+    border-bottom: 1px solid #4A4A4A;
+}

@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Список пісень</title>
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="stylesheet" href="/css/songs.css" />
+</head>
+<body>
+    <!-- Навігаційне меню -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="\images\8fd921994aa087e2f2b3490103313502.jpg" alt="Логотип" />
+        </div>
+        <div class="navbar-right">
+            <div class="navbar-links">
+                <a href="/index.html">Музика</a>
+                <a href="/songs.html">Пісні</a>
+                <a href="/favorites.html">Улюблене</a>
+            </div>
+            <div class="navbar-more">
+                <button class="more-button">...</button>
+            </div>
+            <div class="navbar-auth">
+                <!-- Додайте кнопки автентифікації, якщо потрібно -->
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="songs-list">
+            <h1>Список пісень</h1>
+            <button id="addSongButton" class="add-button">Додати пісню</button>
+            <div id="songs">
+                <!-- Список пісень генеруватиметься через JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Модальне вікно для додавання пісні -->
+    <div id="addSongOverlay">
+        <div id="addSongModal">
+            <h2>Додати нову пісню</h2>
+            <form id="addSongForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="addSongTitle">Назва:</label>
+                    <input type="text" id="addSongTitle" name="Title" placeholder="Введіть назву пісні" required />
+                </div>
+                <div class="form-group">
+                    <label for="addSongArtist">Виконавець:</label>
+                    <input type="text" id="addSongArtist" name="Artist" placeholder="Введіть виконавця" />
+                </div>
+                <div class="form-group">
+                    <label for="addSongAlbumId">ID альбому:</label>
+                    <input type="number" id="addSongAlbumId" name="AlbumId" placeholder="Введіть ID альбому" />
+                </div>
+                <div class="form-group">
+                    <label for="addSongAudioFile">Завантажити аудіо:</label>
+                    <input type="file" id="addSongAudioFile" name="AudioFile" accept="audio/*" />
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" id="saveNewSongButton">Додати</button>
+                    <button type="button" id="cancelAddSongButton">Скасувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальне вікно для редагування пісні -->
+    <div id="editSongOverlay">
+        <div id="editSongModal">
+            <h2>Редагувати пісню</h2>
+            <form id="editSongForm" enctype="multipart/form-data">
+                <input type="hidden" id="editSongId" name="Id" />
+                <div class="form-group">
+                    <label for="editSongTitle">Назва:</label>
+                    <input type="text" id="editSongTitle" name="Title" placeholder="Введіть назву пісні" required />
+                </div>
+                <div class="form-group">
+                    <label for="editSongArtist">Виконавець:</label>
+                    <input type="text" id="editSongArtist" name="Artist" placeholder="Введіть виконавця" />
+                </div>
+                <div class="form-group">
+                    <label for="editSongAlbumId">ID альбому:</label>
+                    <input type="number" id="editSongAlbumId" name="AlbumId" placeholder="Введіть ID альбому" />
+                </div>
+                <div class="form-group">
+                    <label for="editSongAudioFile">Завантажити аудіо (замінити):</label>
+                    <input type="file" id="editSongAudioFile" name="AudioFile" accept="audio/*" />
+                    <p>Поточний URL: <span id="currentAudioUrl"></span></p>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" id="saveEditSongButton">Зберегти</button>
+                    <button type="button" id="cancelEditSongButton">Скасувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Функція для завантаження пісень
+        async function loadSongs() {
+            try {
+                const response = await fetch('/api/Songs');
+                if (!response.ok) {
+                    throw new Error(`Помилка API: ${response.status} ${response.statusText}`);
+                }
+                const songs = await response.json();
+                console.log('Пісні:', songs);
+
+                const songsContainer = document.getElementById('songs');
+                songsContainer.innerHTML = '';
+
+                songs.forEach(song => {
+                    const songCard = document.createElement('div');
+                    songCard.className = 'song-card';
+                    songCard.innerHTML = `
+                            <h4>${song.title}</h4>
+                            <p>Виконавець: ${song.artist || 'Невідомий виконавець'}</p>
+                            ${song.audioUrl ? `
+                                <audio controls>
+                                    <source src="${song.audioUrl}" type="audio/mp3">
+                                    Ваш браузер не підтримує аудіо.
+                                </audio>
+                            ` : '<p>Аудіо недоступне</p>'}
+                            <div class="actions">
+                                <button onclick="openEditSongModal(${song.id}, '${song.title}', '${song.artist || ''}', ${song.albumId || ''}, '${song.audioUrl || ''}')">Редагувати</button>
+                                <button onclick="deleteSong(${song.id})">Видалити</button>
+                            </div>
+                        `;
+                    songsContainer.appendChild(songCard);
+                });
+            } catch (error) {
+                console.error('Помилка при завантаженні пісень:', error);
+                document.getElementById('songs').innerHTML = '<p>Помилка при завантаженні пісень.</p>';
+            }
+        }
+
+        // Функція для відкриття модального вікна додавання
+        document.getElementById('addSongButton').addEventListener('click', () => {
+            document.getElementById('addSongOverlay').style.display = 'block';
+            document.getElementById('addSongModal').style.display = 'block';
+            document.getElementById('addSongForm').reset();
+        });
+
+        // Функція для закриття модального вікна додавання
+        document.getElementById('cancelAddSongButton').addEventListener('click', () => {
+            document.getElementById('addSongOverlay').style.display = 'none';
+            document.getElementById('addSongModal').style.display = 'none';
+        });
+
+        // Функція для додавання нової пісні
+        document.getElementById('addSongForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(document.getElementById('addSongForm'));
+            const title = formData.get('Title');
+            const artist = formData.get('Artist') || null;
+            const albumId = formData.get('AlbumId') ? parseInt(formData.get('AlbumId')) : null;
+
+            if (!title) {
+                alert('Назва пісні обов’язкова!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/Songs', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Не вдалося додати пісню: ${response.status} ${errorText}`);
+                }
+
+                document.getElementById('addSongOverlay').style.display = 'none';
+                document.getElementById('addSongModal').style.display = 'none';
+                await loadSongs();
+            } catch (error) {
+                console.error('Помилка при додаванні пісні:', error);
+                alert('Помилка при додаванні пісні: ' + error.message);
+            }
+        });
+
+        // Функція для відкриття модального вікна редагування
+        function openEditSongModal(id, title, artist, albumId, audioUrl) {
+            document.getElementById('editSongOverlay').style.display = 'block';
+            document.getElementById('editSongModal').style.display = 'block';
+            document.getElementById('editSongForm').reset();
+
+            document.getElementById('editSongId').value = id;
+            document.getElementById('editSongTitle').value = title;
+            document.getElementById('editSongArtist').value = artist;
+            document.getElementById('editSongAlbumId').value = albumId || '';
+            document.getElementById('currentAudioUrl').textContent = audioUrl || 'Немає аудіо';
+        }
+
+        // Функція для закриття модального вікна редагування
+        document.getElementById('cancelEditSongButton').addEventListener('click', () => {
+            document.getElementById('editSongOverlay').style.display = 'none';
+            document.getElementById('editSongModal').style.display = 'none';
+        });
+
+        // Функція для збереження змін пісні
+        document.getElementById('editSongForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(document.getElementById('editSongForm'));
+            const id = document.getElementById('editSongId').value;
+
+            // Додаємо Id явно до FormData
+            formData.set('Id', id);
+
+            // Відладка: виводимо дані у консоль
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
+            // Валідація
+            const title = formData.get('Title');
+            if (!title) {
+                alert('Назва пісні обов’язкова!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/Songs/${id}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Не вдалося оновити пісню: ${response.status} ${errorText}`);
+                }
+
+                document.getElementById('editSongOverlay').style.display = 'none';
+                document.getElementById('editSongModal').style.display = 'none';
+                await loadSongs();
+            } catch (error) {
+                console.error('Помилка при оновленні пісні:', error);
+                alert('Помилка при оновленні пісні: ' + error.message);
+            }
+        });
+
+        // Функція для видалення пісні
+        async function deleteSong(id) {
+            if (!confirm('Ви впевнені, що хочете видалити цю пісню?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/Songs/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Не вдалося видалити пісню: ${response.status} ${response.statusText}`);
+                }
+
+                await loadSongs();
+            } catch (error) {
+                console.error('Помилка при видаленні пісні:', error);
+                alert('Помилка при видаленні пісні.');
+            }
+        }
+
+        // Завантажуємо пісні при завантаженні сторінки
+        loadSongs();
+    </script>
+</body>
+</html>

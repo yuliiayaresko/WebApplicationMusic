@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Музична бібліотека - Альбоми</title>
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <!-- Навігаційне меню -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="\images\8fd921994aa087e2f2b3490103313502.jpg" alt="Логотип" />
+        </div>
+        <div class="navbar-right">
+            <div class="navbar-album-search">
+                <input type="text" id="search-query" placeholder="Пошук..." onkeyup="if(event.key === 'Enter') searchAlbums();" />
+                <button onclick="searchAlbums()">Пошук</button>
+                <button onclick="resetSearch()">Скинути</button>
+            </div>
+            <div class="navbar-links">
+                <a href="/index.html">Музика</a>
+                <a href="/songs.html">Пісні</a>
+                <a href="/favorites.html">Улюблене</a>
+            </div>
+            <div class="navbar-auth">
+                <!-- Додайте кнопки автентифікації, якщо потрібно -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Банер -->
+    <div class="banner">
+        <img src="\images\Знімок екрана 2025-05-14 220957.png"alt="Банер музичної події" onerror="this.onerror=null; this.src='https://via.placeholder.com/1200x300';" />
+    </div>
+
+    <!-- Основний контент -->
+    <main>
+        <header class="header-container">
+            <div class="header-content">
+                <h1>Музичні альбоми</h1>
+                <button onclick="openAddAlbumModal()" class="add-button">Додати альбом</button>
+            </div>
+        </header>
+
+        <!-- Модальне вікно для додавання -->
+        <div id="addAlbumOverlay" style="display:none;"></div>
+        <div id="addAlbumModal" style="display:none;">
+            <h3>Додати альбом</h3>
+            <form id="addAlbumForm" enctype="multipart/form-data" onsubmit="addAlbum(); return false;">
+                <input type="text" id="add-title" placeholder="Назва" required>
+                <input type="number" id="add-year" placeholder="Рік випуску" required>
+                <input type="number" id="add-artistid" placeholder="ID артиста" required>
+                <input type="text" id="add-artistname" placeholder="Ім'я артиста" required>
+                <input type="file" id="add-coverImage" accept="image/*">
+                <div id="add-image-preview" class="preview-container"></div>
+                <input type="submit" value="Додати">
+                <a onclick="closeAddAlbumModal()" aria-label="Закрити">✖</a>
+            </form>
+        </div>
+
+        <!-- Модальне вікно для редагування -->
+        <div id="editAlbumOverlay" style="display:none;"></div>
+        <div id="editAlbum" style="display:none;">
+            <h3>Редагувати альбом</h3>
+            <form id="editAlbumForm" enctype="multipart/form-data" onsubmit="updateAlbum(); return false;">
+                <input type="hidden" id="edit-id">
+                <input type="text" id="edit-title" placeholder="Назва альбому" required>
+                <input type="number" id="edit-year" placeholder="Рік випуску" required>
+                <input type="number" id="edit-artistid" placeholder="ID артиста" required>
+                <input type="text" id="edit-artistname" placeholder="Ім'я артиста" required>
+                <input type="file" id="edit-coverImage" accept="image/*">
+                <div id="edit-image-preview" class="preview-container"></div>
+                <input type="submit" value="Зберегти">
+                <a onclick="closeInput()" aria-label="Закрити">✖</a>
+            </form>
+        </div>
+
+        <!-- Модальне вікно для деталей альбому -->
+        <div id="albumDetailsOverlay" style="display:none;"></div>
+        <div id="albumDetailsModal" style="display:none;">
+            <h3>Деталі альбому</h3>
+            <div id="album-details-content">
+                <img id="album-details-cover" alt="Обкладинка альбому" class="album-cover" />
+                <h4 id="album-details-title"></h4>
+                <p id="album-details-year"></p>
+                <p id="album-details-artist"></p>
+                <h5>Пісні:</h5>
+                <ul id="album-details-songs"></ul>
+            </div>
+            <a onclick="closeAlbumDetailsModal()" aria-label="Закрити">✖</a>
+        </div>
+
+        <div id="albums">
+            <!-- Картки альбомів генеруватимуться через JS -->
+        </div>
+    </main>
+
+    <script src="/js/lab2.js"></script>
+    <script>
+        function openAddAlbumModal() {
+            document.getElementById("addAlbumOverlay").style.display = "block";
+            document.getElementById("addAlbumModal").style.display = "block";
+        }
+
+        function closeAddAlbumModal() {
+            document.getElementById("addAlbumOverlay").style.display = "none";
+            document.getElementById("addAlbumModal").style.display = "none";
+            document.getElementById("addAlbumForm").reset();
+            document.getElementById("add-image-preview").innerHTML = '';
+        }
+
+        function closeAlbumDetailsModal() {
+            document.getElementById("albumDetailsOverlay").style.display = "none";
+            document.getElementById("albumDetailsModal").style.display = "none";
+        }
+    </script>
+</body>
+</html>

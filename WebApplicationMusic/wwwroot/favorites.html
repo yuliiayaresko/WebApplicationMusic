@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Music Library - Favorites</title>
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="stylesheet" href="/css/favorites.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="\images\8fd921994aa087e2f2b3490103313502.jpg" alt="Logo" />
+        </div>
+        <div class="navbar-links">
+            <a href="/index.html">Music</a>
+            <a href="/songs.html">Songs</a>
+            <a href="/favorites.html">Favorites</a>
+            <div class="navbar-more">
+                <button class="more-button">...</button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Улюблені альбоми</h1>
+        </header>
+
+        <div id="albumDetailsOverlay" style="display:none;"></div>
+        <div id="albumDetailsModal" style="display:none;">
+            <h3>Деталі альбому</h3>
+            <div id="album-details-content">
+                <img id="album-details-cover" alt="Album Cover" class="album-cover" />
+                <h4 id="album-details-title"></h4>
+                <p id="album-details-year"></p>
+                <p id="album-details-artist"></p>
+                <h5>Пісні:</h5>
+                <ul id="album-details-songs"></ul>
+            </div>
+            <a onclick="closeAlbumDetailsModal()" aria-label="Закрити">✖</a>
+        </div>
+
+        <div id="favorites">
+            <!-- Картки улюблених альбомів генеруватимуться через JS -->
+        </div>
+    </main>
+
+    <script src="/js/favorites.js"></script>
+    <script>
+        function closeAlbumDetailsModal() {
+            document.getElementById("albumDetailsOverlay").style.display = "none";
+            document.getElementById("albumDetailsModal").style.display = "none";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+﻿/* Секція списку пісень */
+.songs-list {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+    /* Заголовок */
+    .songs-list h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #FFFFFF;
+        border-bottom: 2px solid #4FD1C5;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+/* Кнопка "Додати пісню" */
+.add-button {
+    background-color: #4FD1C5;
+    color: #121212;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+    .add-button:hover {
+        background-color: #38B2AC;
+    }
+
+/* Контейнер для пісень */
+#songs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Картка пісні */
+.song-card {
+    background-color: #1A1A1A;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+    .song-card:hover {
+        background-color: #252525;
+    }
+
+    /* Стилі для тексту в картці */
+    .song-card h4 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: white;
+    }
+
+    .song-card p {
+        margin: 0;
+        font-size: 0.9375rem;
+        color: #D1D5DB;
+    }
+
+        /* Стилі для посилання на альбом */
+        .song-card p a {
+            color: #4FD1C5;
+            text-decoration: none;
+        }
+
+            .song-card p a:hover {
+                color: #38B2AC;
+                text-decoration: underline;
+            }
+
+    /* Стилі для аудіоплеєра */
+    .song-card audio {
+        width: 100%;
+        margin-top: 10px;
+        background-color: #2D2D2D;
+        border-radius: 4px;
+        outline: none;
+    }
+
+        .song-card audio::-webkit-media-controls-panel {
+            background-color: #2D2D2D;
+            border-radius: 4px;
+        }
+
+/* Кнопки дій (редагувати, видалити) */
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+    .actions button {
+        background-color: transparent;
+        color: #4FD1C5;
+        border: 1px solid #4FD1C5;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+        .actions button:hover {
+            background-color: #4FD1C5;
+            color: #121212;
+        }
+
+/* Модальні вікна */
+#addSongOverlay, #editSongOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    display: none;
+}
+
+#addSongModal, #editSongModal {
+    max-width: 500px;
+    margin: 50px auto;
+    background-color: #1A1A1A;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #4A4A4A;
+    position: relative;
+    z-index: 1000;
+    display: none;
+}
+
+    #addSongModal h2, #editSongModal h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #FFFFFF;
+        margin-bottom: 20px;
+    }
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        font-size: 0.9375rem;
+        color: #D1D5DB;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"] {
+        padding: 8px;
+        border: 1px solid #4A4A4A;
+        border-radius: 4px;
+        background-color: #2D2D2D;
+        color: #FFFFFF;
+        font-size: 1rem;
+    }
+
+    .form-group input[type="file"] {
+        padding: 8px 0;
+        border: 1px solid #4A4A4A;
+        border-radius: 4px;
+        background-color: #2D2D2D;
+        color: #D1D5DB;
+        font-size: 0.9375rem;
+    }
+
+        .form-group input[type="file"]::file-selector-button {
+            background-color: #4FD1C5;
+            color: #121212;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+            .form-group input[type="file"]::file-selector-button:hover {
+                background-color: #38B2AC;
+            }
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+    .modal-actions button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+        .modal-actions button[type="submit"] {
+            background-color: #4FD1C5;
+            color: #121212;
+        }
+
+        .modal-actions button[type="button"] {
+            background-color: transparent;
+            color: whitesmoke;
+            border: 1px solid #FF6B6B;
+        }
+
+        .modal-actions button:hover {
+            opacity: 0.9;
+        }
+
+/* Поточний URL аудіо */
+#currentAudioUrl {
+    color: darkgrey;
+    font-size: 0.875rem;
+}
+
+/* Повідомлення про помилку */
+#songs p {
+    font-size: 1rem;
+    color: whitesmoke;
+    text-align: left;
+    padding: 20px;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .songs-list {
+        padding: 15px;
+    }
+
+        .songs-list h1 {
+            font-size: 1.75rem;
+        }
+
+    .song-card {
+        padding: 10px;
+    }
+
+        .song-card h4 {
+            font-size: 1.1rem;
+        }
+
+        .song-card p {
+            font-size: 0.875rem;
+        }
+
+        .song-card audio {
+            width: 100%;
+        }
+
+    #addSongModal, #editSongModal {
+        max-width: 90%;
+        margin: 20px auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .songs-list {
+        padding: 10px;
+    }
+
+        .songs-list h1 {
+            font-size: 1.5rem;
+        }
+
+    .song-card {
+        padding: 8px;
+    }
+
+        .song-card h4 {
+            font-size: 1rem;
+        }
+
+        .song-card p {
+            font-size: 0.8125rem;
+        }
+
+        .song-card audio {
+            width: 100%;
+        }
+
+    .actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+        .actions button {
+            width: 100%;
+        }
+}

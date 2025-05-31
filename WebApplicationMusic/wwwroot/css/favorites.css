@@ -1,0 +1,180 @@
+﻿/* Контейнер альбомів */
+#favorites {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Картка альбому */
+.album-card {
+    background-color: #1A1A1A;
+    border-radius: 8px;
+    padding: 10px;
+    transition: transform 0.2s ease;
+    width: 250px; /* Фіксована ширина картки */
+    height: auto; /* Автоматична висота */
+}
+
+.album-card:hover {
+    transform: scale(1.05);
+}
+
+/* Зображення альбому */
+.album-image {
+    width: 100%; /* Зображення займає всю ширину картки */
+    height: 250px; /* Фіксована висота для пропорційного вигляду */
+    object-fit: cover; /* Зберігаємо пропорції зображення */
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background-color: #2D2D2D; /* Фон на випадок, якщо зображення не завантажилося */
+}
+
+/* Інформація про альбом */
+.album-info {
+    cursor: pointer;
+    text-align: left;
+}
+
+.album-info h4 {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.album-info p {
+    margin: 4px 0;
+    font-size: 0.9375rem;
+    color: #D1D5DB;
+}
+
+/* Стилі для рейтингу */
+.album-rating {
+    color: #F39C12; /* Яскравий помаранчевий колір для оцінки */
+    font-weight: bold;
+    font-size: 0.9375rem;
+    margin: 4px 0;
+}
+
+/* Стилі для кнопки оцінювання */
+.actions {
+    padding: 10px;
+    text-align: center;
+}
+
+.rate-button {
+    background-color: #F39C12;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-size: 0.875rem;
+}
+
+.rate-button:hover {
+    background-color: #E67E22; /* Темніший відтінок при наведенні */
+}
+
+/* Стилі для спливаючої підказки */
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+/* Стилі для модального вікна */
+#albumDetailsOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+#albumDetailsModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1A1A1A;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    z-index: 1001;
+    color: #FFFFFF;
+}
+
+#albumDetailsModal h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #FFFFFF;
+}
+
+#albumDetailsModal h4 {
+    margin: 10px 0;
+    font-size: 1.25rem;
+    color: #FFFFFF;
+}
+
+#albumDetailsModal p {
+    margin: 5px 0;
+    color: #D1D5DB;
+}
+
+#albumDetailsModal ul {
+    list-style: none;
+    padding: 0;
+    color: #D1D5DB;
+}
+
+#albumDetailsModal li {
+    margin: 5px 0;
+}
+
+#albumDetailsModal a {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #FFFFFF;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .album-image {
+        height: 200px; /* Зменшуємо висоту на планшетах */
+    }
+
+    .album-card {
+        width: 200px; /* Зменшуємо ширину картки */
+    }
+}
+
+@media (max-width: 480px) {
+    .album-image {
+        height: 150px; /* Ще менша висота на мобільних */
+    }
+
+    .album-card {
+        width: 150px; /* Зменшуємо ширину картки */
+    }
+}
