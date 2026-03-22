@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationMusic", "WebApplicationMusic\WebApplicationMusic.csproj", "{496DD391-47A5-4D86-9A46-6CD7BF39228C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationMusic.Tests", "WebApplicationMusic.Tests\WebApplicationMusic.Tests.csproj", "{AE41FC90-2259-5473-92E8-BC17B1218093}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{496DD391-47A5-4D86-9A46-6CD7BF39228C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{496DD391-47A5-4D86-9A46-6CD7BF39228C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{496DD391-47A5-4D86-9A46-6CD7BF39228C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE41FC90-2259-5473-92E8-BC17B1218093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE41FC90-2259-5473-92E8-BC17B1218093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE41FC90-2259-5473-92E8-BC17B1218093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE41FC90-2259-5473-92E8-BC17B1218093}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
