@@ -2,12 +2,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using WebApplicationMusic;
+using WebApplicationMusic.Services;
 using WebApplicationMusic.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<IAlbumService, AlbumService>();
 
 // Explicitly disable response compression
 builder.Services.AddResponseCompression(options =>

@@ -19,14 +19,12 @@ namespace WebApplicationMusic.Tests
             _fixture = fixture;
         }
 
-        // ──────────────────────────────────────────
-        // GET: api/Albums
-        // ──────────────────────────────────────────
+        
 
         [Fact]
         public async Task GetAlbums_ReturnsAllAlbums()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             context.Albums.Add(new Album { Title = "Album A", ArtistName = "Artist A", ReleaseYear = 2000 });
             context.Albums.Add(new Album { Title = "Album B", ArtistName = "Artist B", ReleaseYear = 2001 });
@@ -34,22 +32,18 @@ namespace WebApplicationMusic.Tests
 
             var controller = new AlbumsController(context, null);
 
-            // Act
+            
             var result = await controller.GetAlbums();
 
-            // Assert
+           
             var albums = Assert.IsAssignableFrom<IEnumerable<Album>>(result.Value);
             Assert.NotEmpty(albums);
         }
 
-        // ──────────────────────────────────────────
-        // GET: api/Albums/{id}
-        // ──────────────────────────────────────────
-
         [Fact]
         public async Task GetAlbum_ExistingId_ReturnsAlbum()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var album = new Album { Id = 200, Title = "Specific Album", ArtistName = "Solo", ReleaseYear = 2010 };
             context.Albums.Add(album);
@@ -57,10 +51,10 @@ namespace WebApplicationMusic.Tests
 
             var controller = new AlbumsController(context, null);
 
-            // Act
+            
             var result = await controller.GetAlbum(200);
 
-            // Assert
+            
             var returned = Assert.IsType<Album>(result.Value);
             Assert.Equal("Specific Album", returned.Title);
         }
@@ -68,25 +62,22 @@ namespace WebApplicationMusic.Tests
         [Fact]
         public async Task GetAlbum_NonExistingId_ReturnsNotFound()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var controller = new AlbumsController(context, null);
 
-            // Act
+     
             var result = await controller.GetAlbum(99999);
 
-            // Assert
+           
             Assert.IsType<NotFoundResult>(result.Result);
         }
 
-        // ──────────────────────────────────────────
-        // GET: api/Albums/search
-        // ──────────────────────────────────────────
 
         [Fact]
         public async Task SearchAlbums_EmptyQuery_ReturnsAllAlbums()
         {
-            // Arrange
+           
             using var context = new MusicAPIContext(_fixture.DbOptions);
             context.Albums.Add(new Album { Title = "Alpha", ArtistName = "Art1", ReleaseYear = 2020 });
             context.Albums.Add(new Album { Title = "Beta", ArtistName = "Art2", ReleaseYear = 2021 });
@@ -94,10 +85,10 @@ namespace WebApplicationMusic.Tests
 
             var controller = new AlbumsController(context, null);
 
-            // Act
+           
             var result = await controller.SearchAlbums(string.Empty);
 
-            // Assert
+          
             var albums = Assert.IsAssignableFrom<IEnumerable<Album>>(result.Value);
             Assert.NotEmpty(albums);
         }
@@ -105,7 +96,7 @@ namespace WebApplicationMusic.Tests
         [Fact]
         public async Task SearchAlbums_ByArtistName_ReturnsMatchingAlbums()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             context.Albums.Add(new Album { Title = "Jazz Night", ArtistName = "Miles Davis", ReleaseYear = 1959 });
             context.Albums.Add(new Album { Title = "Rock Hard", ArtistName = "AC/DC", ReleaseYear = 1980 });
@@ -113,10 +104,10 @@ namespace WebApplicationMusic.Tests
 
             var controller = new AlbumsController(context, null);
 
-            // Act
+           
             var result = await controller.SearchAlbums("Miles");
 
-            // Assert
+            
             var albums = Assert.IsAssignableFrom<IEnumerable<Album>>(result.Value);
             Assert.Single(albums);
             Assert.Equal("Miles Davis", albums.First().ArtistName);
@@ -125,43 +116,41 @@ namespace WebApplicationMusic.Tests
         [Fact]
         public async Task SearchAlbums_NoMatch_ReturnsEmptyList()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             context.Albums.Add(new Album { Title = "Only One", ArtistName = "Some Artist", ReleaseYear = 2022 });
             await context.SaveChangesAsync();
 
             var controller = new AlbumsController(context, null);
 
-            // Act
+           
             var result = await controller.SearchAlbums("xyznotexist");
 
-            // Assert
+            
             var albums = Assert.IsAssignableFrom<IEnumerable<Album>>(result.Value);
             Assert.Empty(albums);
         }
 
-        // ──────────────────────────────────────────
-        // GET: api/Albums/favorites
-        // ──────────────────────────────────────────
+       
 
         [Fact]
         public async Task GetFavorites_InvalidUserId_ReturnsBadRequest()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var controller = new AlbumsController(context, null);
 
-            // Act
+            
             var result = await controller.GetFavorites(0);
 
-            // Assert
+            
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetFavorites_ValidUserId_ReturnsFavoritesList()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var album = new Album { Id = 300, Title = "Fav", ArtistName = "Band", ReleaseYear = 2015 };
             context.Albums.Add(album);
@@ -170,36 +159,34 @@ namespace WebApplicationMusic.Tests
 
             var controller = new AlbumsController(context, null);
 
-            // Act
+            
             var result = await controller.GetFavorites(10);
 
-            // Assert
+            
             var ok = Assert.IsType<OkObjectResult>(result.Result);
             Assert.NotNull(ok.Value);
         }
 
-        // ──────────────────────────────────────────
-        // GET: api/Albums/user/{userId}
-        // ──────────────────────────────────────────
+        
 
         [Fact]
         public async Task GetFavoriteAlbumsByUser_InvalidUserId_ReturnsBadRequest()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var controller = new AlbumsController(context, null);
 
-            // Act
+            
             var result = await controller.GetFavoriteAlbumsByUser(-5);
 
-            // Assert
+            
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetFavoriteAlbumsByUser_ValidUser_ReturnsData()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var album = new Album { Id = 400, Title = "User Fav", ArtistName = "Band", ReleaseYear = 2018 };
             context.Albums.Add(album);
@@ -208,32 +195,30 @@ namespace WebApplicationMusic.Tests
 
             var controller = new AlbumsController(context, null);
 
-            // Act
+            
             var result = await controller.GetFavoriteAlbumsByUser(20);
 
-            // Assert
+            
             var ok = Assert.IsType<OkObjectResult>(result.Result);
             Assert.NotNull(ok.Value);
         }
 
-        // ──────────────────────────────────────────
-        // POST: api/Albums
-        // ──────────────────────────────────────────
+        
 
         [Fact]
         public async Task PostAlbum_WithoutImage_ReturnsCreated()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var mockEnv = new Mock<IWebHostEnvironment>();
             var controller = new AlbumsController(context, mockEnv.Object);
 
             var dto = new AlbumDto { Title = "New Album", ArtistName = "New Artist", ReleaseYear = 2023 };
 
-            // Act
+           
             var result = await controller.PostAlbum(dto, null);
 
-            // Assert
+            
             var created = Assert.IsType<CreatedAtActionResult>(result.Result);
             var album = Assert.IsType<Album>(created.Value);
             Assert.Equal("New Album", album.Title);
@@ -242,7 +227,7 @@ namespace WebApplicationMusic.Tests
         [Fact]
         public async Task PostAlbum_WithInvalidImageSize_ReturnsBadRequest()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var mockEnv = new Mock<IWebHostEnvironment>();
             var controller = new AlbumsController(context, mockEnv.Object);
@@ -252,76 +237,74 @@ namespace WebApplicationMusic.Tests
 
             var dto = new AlbumDto { Title = "Too Big" };
 
-            // Act
+            
             var result = await controller.PostAlbum(dto, fileMock.Object);
 
-            // Assert
+            
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task PostAlbum_WithInvalidImageType_ReturnsBadRequest()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var mockEnv = new Mock<IWebHostEnvironment>();
             var controller = new AlbumsController(context, mockEnv.Object);
 
             var fileMock = new Mock<IFormFile>();
-            fileMock.Setup(_ => _.Length).Returns(1 * 1024 * 1024); // 1 МБ — розмір OK
-            fileMock.Setup(_ => _.ContentType).Returns("application/pdf"); // Невірний тип
+            fileMock.Setup(_ => _.Length).Returns(1 * 1024 * 1024); 
+            fileMock.Setup(_ => _.ContentType).Returns("application/pdf"); 
 
             var dto = new AlbumDto { Title = "Wrong Type" };
 
-            // Act
+            
             var result = await controller.PostAlbum(dto, fileMock.Object);
 
-            // Assert
+            
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
-        // ──────────────────────────────────────────
-        // PUT: api/Albums/{id}
-        // ──────────────────────────────────────────
+        
 
         [Fact]
         public async Task PutAlbum_MismatchedId_ReturnsBadRequest()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var mockEnv = new Mock<IWebHostEnvironment>();
             var controller = new AlbumsController(context, mockEnv.Object);
 
             var dto = new AlbumDto { Id = 999, Title = "Mismatch" };
 
-            // Act
-            var result = await controller.PutAlbum(1, dto, null); // id=1 ≠ dto.Id=999
+            
+            var result = await controller.PutAlbum(1, dto, null); 
 
-            // Assert
+            
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
         public async Task PutAlbum_NonExistingAlbum_ReturnsNotFound()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var mockEnv = new Mock<IWebHostEnvironment>();
             var controller = new AlbumsController(context, mockEnv.Object);
 
             var dto = new AlbumDto { Id = 88888, Title = "Ghost Album" };
 
-            // Act
+            
             var result = await controller.PutAlbum(88888, dto, null);
 
-            // Assert
+            
             Assert.IsType<NotFoundResult>(result);
         }
 
         [Fact]
         public async Task PutAlbum_ValidData_UpdatesAlbumAndReturnsNoContent()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var mockEnv = new Mock<IWebHostEnvironment>();
             var album = new Album { Id = 500, Title = "Old Title", ArtistName = "Old", ReleaseYear = 2000 };
@@ -331,10 +314,10 @@ namespace WebApplicationMusic.Tests
             var controller = new AlbumsController(context, mockEnv.Object);
             var dto = new AlbumDto { Id = 500, Title = "New Title", ArtistName = "New", ReleaseYear = 2024 };
 
-            // Act
+            
             var result = await controller.PutAlbum(500, dto, null);
 
-            // Assert
+            
             Assert.IsType<NoContentResult>(result);
             var updated = await context.Albums.FindAsync(500);
             Assert.Equal("New Title", updated.Title);
@@ -343,7 +326,7 @@ namespace WebApplicationMusic.Tests
         [Fact]
         public async Task PutAlbum_WithInvalidImageSize_ReturnsBadRequest()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var mockEnv = new Mock<IWebHostEnvironment>();
             var album = new Album { Id = 501, Title = "Has Image", ArtistName = "Band", ReleaseYear = 2020 };
@@ -356,21 +339,19 @@ namespace WebApplicationMusic.Tests
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(_ => _.Length).Returns(10 * 1024 * 1024); // 10 МБ
 
-            // Act
+            
             var result = await controller.PutAlbum(501, dto, fileMock.Object);
 
-            // Assert
+            
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
-        // ──────────────────────────────────────────
-        // DELETE: api/Albums/{id}
-        // ──────────────────────────────────────────
+        
 
         [Fact]
         public async Task DeleteAlbum_ExistingAlbum_RemovesFromDatabase()
         {
-            // Arrange
+            
             using var context = new MusicAPIContext(_fixture.DbOptions);
             var album = new Album { Id = 600, Title = "To Delete", ArtistName = "Band", ReleaseYear = 2019 };
             context.Albums.Add(album);
@@ -378,10 +359,10 @@ namespace WebApplicationMusic.Tests
 
             var controller = new AlbumsController(context, null);
 
-            // Act
+            
             var result = await controller.DeleteAlbum(600);
 
-            // Assert
+            
             Assert.IsType<NoContentResult>(result);
             Assert.Null(await context.Albums.FindAsync(600));
         }

@@ -15,7 +15,7 @@ namespace WebApplicationMusic.Tests
             _fixture = fixture;
         }
 
-        // === 1. [InlineData] ===
+        
         [Theory]
         [InlineData("Bohemian Rhapsody", "Queen", "5:55", true)]
         [InlineData("", "Unknown", "3:30", false)]
@@ -30,7 +30,7 @@ namespace WebApplicationMusic.Tests
             Assert.Equal(shouldBeValid, isValid);
         }
 
-        // === 2. [MemberData] (складний тип даних) ===
+        
         public static IEnumerable<object[]> SongTestData()
         {
             yield return new object[] { new Song { Title = "Stairway to Heaven", Artist = "Led Zeppelin", Duration = "8:02" }, true };

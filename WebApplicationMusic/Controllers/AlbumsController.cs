@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationMusic;
 using WebApplicationMusic.Models;
+using WebApplicationMusic.Services;
 
 namespace WebApplicationMusic.Controllers
 {
@@ -17,17 +18,30 @@ namespace WebApplicationMusic.Controllers
     {
         private readonly MusicAPIContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly IAlbumService? _albumService;
 
+        // Старий конструктор — для старих тестів
         public AlbumsController(MusicAPIContext context, IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;
         }
 
+        // Новий конструктор — для Moq тестів
+        public AlbumsController(IAlbumService albumService)
+        {
+            _albumService = albumService;
+        }
+
         // GET: api/Albums
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Album>>> GetAlbums()
         {
+            if (_albumService != null)
+            {
+                var result = await _albumService.GetAllAlbumsAsync();
+                return Ok(result);
+            }
             return await _context.Albums
                 .Include(a => a.Songs)
                 .ToListAsync();
@@ -37,6 +51,13 @@ namespace WebApplicationMusic.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Album>> GetAlbum(int id)
         {
+            if (_albumService != null)
+            {
+                var result = await _albumService.GetAlbumByIdAsync(id);
+                if (result == null) return NotFound();
+                return Ok(result);
+            }
+
             var album = await _context.Albums
                 .Include(a => a.Songs)
                 .FirstOrDefaultAsync(a => a.Id == id);
@@ -53,6 +74,12 @@ namespace WebApplicationMusic.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Album>>> SearchAlbums(string query)
         {
+            if (_albumService != null)
+            {
+                var result = await _albumService.SearchAlbumsAsync(query);
+                return Ok(result);
+            }
+
             if (string.IsNullOrWhiteSpace(query))
             {
                 return await _context.Albums
@@ -78,6 +105,12 @@ namespace WebApplicationMusic.Controllers
             if (userId <= 0)
             {
                 return BadRequest("UserId є обов'язковим і має бути більше 0.");
+            }
+
+            if (_albumService != null)
+            {
+                var result = await _albumService.GetFavoritesAsync(userId);
+                return Ok(result);
             }
 
             var favorites = await _context.FavoriteAlbums
@@ -109,6 +142,12 @@ namespace WebApplicationMusic.Controllers
                 return BadRequest("UserId є обов'язковим і має бути більше 0.");
             }
 
+            if (_albumService != null)
+            {
+                var result = await _albumService.GetFavoritesByUserAsync(userId);
+                return Ok(result);
+            }
+
             var favorites = await _context.FavoriteAlbums
                 .Where(f => f.UserId == userId)
                 .Include(f => f.Album)
@@ -133,6 +172,19 @@ namespace WebApplicationMusic.Controllers
         [HttpPost]
         public async Task<ActionResult<Album>> PostAlbum([FromForm] AlbumDto albumDto, IFormFile? coverImage)
         {
+            if (_albumService != null)
+            {
+                try
+                {
+                    var result = await _albumService.CreateAlbumAsync(albumDto, coverImage);
+                    return CreatedAtAction("GetAlbum", new { id = result.Id }, result);
+                }
+                catch (ArgumentException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
             if (coverImage != null)
             {
                 if (coverImage.Length > 5 * 1024 * 1024)
@@ -176,6 +228,20 @@ namespace WebApplicationMusic.Controllers
             if (id != albumDto.Id)
             {
                 return BadRequest("Id у маршруті не збігається з Id у тілі запиту.");
+            }
+
+            if (_albumService != null)
+            {
+                try
+                {
+                    var updated = await _albumService.UpdateAlbumAsync(id, albumDto, coverImage);
+                    if (!updated) return NotFound();
+                    return NoContent();
+                }
+                catch (ArgumentException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             var existingAlbum = await _context.Albums.FindAsync(id);
@@ -243,6 +309,13 @@ namespace WebApplicationMusic.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlbum(int id)
         {
+            if (_albumService != null)
+            {
+                var deleted = await _albumService.DeleteAlbumAsync(id);
+                if (!deleted) return NotFound();
+                return NoContent();
+            }
+
             var album = await _context.Albums.FindAsync(id);
             if (album == null)
             {
@@ -273,6 +346,20 @@ namespace WebApplicationMusic.Controllers
                 return BadRequest("UserId є обов'язковим і має бути більше 0.");
             }
 
+            if (_albumService != null)
+            {
+                try
+                {
+                    var favorite = await _albumService.AddToFavoritesAsync(albumId, userId);
+                    if (favorite == null) return NotFound("Альбом не знайдено.");
+                    return Ok(favorite);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Conflict(ex.Message);
+                }
+            }
+
             var album = await _context.Albums.FindAsync(albumId);
             if (album == null)
             {
@@ -286,14 +373,14 @@ namespace WebApplicationMusic.Controllers
                 return Conflict("Альбом уже в улюблених.");
             }
 
-            var favorite = new FavoriteAlbum
+            var fav = new FavoriteAlbum
             {
                 AlbumId = albumId,
                 UserId = userId,
                 Rating = 0
             };
 
-            _context.FavoriteAlbums.Add(favorite);
+            _context.FavoriteAlbums.Add(fav);
             try
             {
                 await _context.SaveChangesAsync();
@@ -304,7 +391,7 @@ namespace WebApplicationMusic.Controllers
                 return StatusCode(500, $"Помилка при додаванні до улюблених: {ex.Message}");
             }
 
-            return Ok(favorite);
+            return Ok(fav);
         }
 
         // DELETE: api/Albums/5/favorite
@@ -314,6 +401,13 @@ namespace WebApplicationMusic.Controllers
             if (userId <= 0)
             {
                 return BadRequest("UserId є обов'язковим і має бути більше 0.");
+            }
+
+            if (_albumService != null)
+            {
+                var removed = await _albumService.RemoveFromFavoritesAsync(albumId, userId);
+                if (!removed) return NotFound("Альбом не знайдено в улюблених.");
+                return NoContent();
             }
 
             var favorite = await _context.FavoriteAlbums
@@ -346,13 +440,20 @@ namespace WebApplicationMusic.Controllers
                 return BadRequest("Оцінка має бути від 1 до 5.");
             }
 
-            var favorite = await _context.FavoriteAlbums.FindAsync(id);
-            if (favorite == null)
+            if (_albumService != null)
+            {
+                var favorite = await _albumService.RateAlbumAsync(id, rating);
+                if (favorite == null) return NotFound("Улюблений альбом не знайдено.");
+                return Ok(new { favorite.Id, favorite.AlbumId, favorite.UserId, favorite.Rating });
+            }
+
+            var fav = await _context.FavoriteAlbums.FindAsync(id);
+            if (fav == null)
             {
                 return NotFound("Улюблений альбом не знайдено.");
             }
 
-            favorite.Rating = rating;
+            fav.Rating = rating;
             try
             {
                 await _context.SaveChangesAsync();
@@ -363,7 +464,7 @@ namespace WebApplicationMusic.Controllers
                 return StatusCode(500, $"Помилка при оновленні оцінки: {ex.Message}");
             }
 
-            return Ok(new { favorite.Id, favorite.AlbumId, favorite.UserId, favorite.Rating });
+            return Ok(new { fav.Id, fav.AlbumId, fav.UserId, fav.Rating });
         }
 
         private bool AlbumExists(int id)
