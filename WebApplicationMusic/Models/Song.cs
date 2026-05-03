@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplicationMusic.Models
 {
@@ -9,20 +9,21 @@ namespace WebApplicationMusic.Models
 
         [Required]
         [StringLength(100)]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         [StringLength(5)]
         public string? Duration { get; set; }
 
         public int? AlbumId { get; set; }
 
-        [StringLength(100)] 
-        public string? Artist { get; set; } 
+        [StringLength(100)]
+        public string? Artist { get; set; }
 
-        [StringLength(255)] 
-        public string? AudioUrl { get; set; } 
+        [StringLength(255)]
+        public string? AudioUrl { get; set; }
 
-        public Album Album { get; set; }
+        public Album? Album { get; set; }
+
         public List<PlaylistSong>? PlaylistSongs { get; set; }
     }
 }

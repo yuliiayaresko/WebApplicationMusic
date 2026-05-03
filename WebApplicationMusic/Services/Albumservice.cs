@@ -35,11 +35,10 @@ namespace WebApplicationMusic.Services
             if (string.IsNullOrWhiteSpace(query))
                 return await _context.Albums.Include(a => a.Songs).ToListAsync();
 
-            query = query.ToLower();
             return await _context.Albums
                 .Include(a => a.Songs)
-                .Where(a => a.Title.ToLower().Contains(query) ||
-                            a.ArtistName.ToLower().Contains(query) ||
+                .Where(a => a.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                            (a.ArtistName != null && a.ArtistName.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
                             a.ReleaseYear.ToString().Contains(query))
                 .ToListAsync();
         }

@@ -136,7 +136,7 @@ namespace WebApplicationMusic.Controllers
                 return BadRequest("Назва пісні обов’язкова!");
             }
 
-            string audioPath = null;
+            string? audioPath = null;
             if (songDto.AudioFile != null && songDto.AudioFile.Length > 0)
             {
                 audioPath = await SaveAudioFile(songDto.AudioFile);
@@ -210,9 +210,9 @@ namespace WebApplicationMusic.Controllers
     public class SongDto
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public required string Title { get; set; }
         public int? AlbumId { get; set; }
-        public string Artist { get; set; }
+        public string? Artist { get; set; }
         public IFormFile? AudioFile { get; set; }
     }
 }
